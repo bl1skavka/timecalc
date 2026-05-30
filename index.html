@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учет работы агрегатов v17</title>
+    <style>
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+        }
+        
+        body { 
+            background-color: #000000; 
+            color: #ffffff; 
+            padding-bottom: 30px; 
+        }
+        
+        .app-container { 
+            max-width: 450px; 
+            margin: 0 auto; 
+            background-color: #000000; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            border: 1px solid #262626;
+        }
+        
+        /* ШАПКА И ТАБЫ */
+        header { 
+            background-color: #171717; 
+            color: #ffffff; 
+            padding: 15px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 50; 
+            border-bottom: 1px solid #262626;
+        }
+        
+        .header-top { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .header-top h1 { 
+            font-size: 16px; 
+            font-weight: bold; 
+        }
+        
+        .clear-btn { 
+            font-size: 11px; 
+            padding: 4px 8px; 
+            border-radius: 6px; 
+            border: 1px solid #404040; 
+            background: transparent; 
+            color: #ffffff; 
+            cursor: pointer; 
+        }
+        
+        .clear-btn:hover {
+            background: #262626;
+        }
+        
+        .tabs { 
+            display: flex; 
+            justify-content: space-around; 
+            margin-top: 12px; 
+        }
+        
+        .tab-btn { 
+            font-size: 12px; 
+            text-transform: uppercase; 
+            font-weight: 600; 
+            background: none; 
+            border: none; 
+            color: inherit; 
+            opacity: 0.5; 
+            padding-bottom: 4px; 
+            cursor: pointer; 
+        }
+        
+        .tab-btn.active { 
+            opacity: 1; 
+            border-bottom: 2px solid #f97316; 
+            color: #f97316;
+        }
+
+        /* КОНТЕНТ */
+        main { 
+            padding: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+        }
+        
+        .tab-content { 
+            display: none; 
+            flex-direction: column; 
+            gap: 15px; 
+        }
+        
+        .tab-content.active { 
+            display: flex; 
+        }
+        
+        .card { 
+            background-color: #171717; 
+            border: 1px solid #262626; 
+            padding: 15px; 
+            border-radius: 12px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
+        
+        .flex-row-justify { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .block-title { 
+            font-size: 12px; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+        
+        .title-blue { color: #38bdf8; } 
+        .title-rose { color: #f87171; } 
+        .title-green { color: #4ade80; } 
+        
+        .sub-card { 
+            background-color: #0a0a0a; 
+            border: 1px solid #262626; 
+            padding: 10px; 
+            border-radius: 8px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            font-size: 13px; 
+        }
+        
+        /* УДОБНЫЕ ПОЛЯ ВВОДА ВРЕМЕНИ */
+        .time-group { 
+            display: flex; 
+            align-items: center; 
+            gap: 1px; 
+            padding: 6px 8px; 
+            border-radius: 8px; 
+            border: 1px solid #404040; 
+            background: #171717; 
+        }
+        
+        .time-input { 
+            width: 35px; 
+            text-align: center; 
+            background: transparent; 
+            border: none; 
+            color: #ffffff; 
+            font-weight: bold; 
+            font-size: 16px; 
+            outline: none; 
+        }
+        
+        select, input[type="text"] { 
+            padding: 8px; 
+            border-radius: 8px; 
+            border: 1px solid #404040; 
+            background: #171717; 
+            color: #ffffff; 
+            font-size: 13px; 
+            outline: none; 
+        }
+        
+        .select-w-60 { 
+            width: 60%; 
+            font-weight: bold; 
+            color: #f97316;
+        }
+        
+        /* КНОПКИ ОРАНЖЕВЫЕ */
+        .add-btn { 
+            color: #ffffff; 
+            background-color: #f97316;
+            font-size: 12px; 
+            padding: 6px 12px; 
+            border-radius: 8px; 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+        
+        .add-btn:hover { background-color: #ea580c; }
+        
+        .calc-btn { 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 12px; 
+            background-color: #f97316; 
+            color: #ffffff; 
+            font-weight: bold; 
+            font-size: 15px; 
+            border: none; 
+            cursor: pointer; 
+        }
+        
+        .calc-btn:hover { background-color: #ea580c; }
+        
+        .del-btn { 
+            background: none; 
+            border: none; 
+            color: #ef4444; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            padding: 0 8px; 
+        }
+        
+        /* РЕЗУЛЬТАТЫ */
+        .results-card { 
+            border: 2px solid #f97316; 
+            padding: 15px; 
+            border-radius: 12px; 
+            display: none; 
+            flex-direction: column; 
+            gap: 10px; 
+            background-color: #171717;
+        }
+        
+        .results-card.active { 
+            display: flex; 
+        }
+        
+        .res-item { 
+            border-top: 1px solid #262626; 
+            padding-top: 10px; 
+            margin-top: 5px; 
+        }
+        
+        .res-item:first-child { 
+            border-top: none; 
+            padding-top: 0; 
+            margin-top: 0; 
+        }
+        
+        .res-header { 
+            display: flex; 
+            justify-content: space-between; 
+            font-weight: bold; 
+            font-size: 13px; 
+        }
+        
+        .res-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 8px; 
+            margin-top: 5px; 
+        }
+        
+        .res-sub { 
+            padding: 6px; 
+            border: 1px solid #262626; 
+            border-radius: 6px; 
+            font-size: 11px; 
+            background-color: #0a0a0a;
+        }
+        
+        .res-val { 
+            font-weight: bold; 
+            font-size: 12px; 
+            display: block; 
+            margin-top: 2px; 
+            color: #38bdf8; 
+        }
+        
+        .res-val-green { 
+            color: #4ade80; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <header>
+        <div class="header-top">
+            <h1>Учет агрегатов</h1>
+            <button class="clear-btn" onclick="resetDay()">Очистить</button>
+        </div>
+        <div class="tabs">
+            <button class="tab-btn active" id="tab-calc" onclick="switchTab('calc')">Сутки</button>
+            <button class="tab-btn" id="tab-variants" onclick="switchTab('variants')">Варианты</button>
+            <button class="tab-btn" id="tab-equipment" onclick="switchTab('equipment')">Техника</button>
+        </div>
+    </header>
+
+    <main>
+        
+        <div id="content-calc" class="tab-content active">
+            <div class="card flex-row-justify">
+                <span style="font-size: 12px; font-weight: bold; opacity: 0.8;">НАЧАЛО СУТОК:</span>
+                <div class="time-group">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="dayStartH" class="time-input" value="04" maxlength="2" onblur="validateTime(this, 23)">
+                    <span style="opacity:0.5; font-weight:bold; font-size: 16px;">:</span>
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="dayStartM" class="time-input" value="00" maxlength="2" onblur="validateTime(this, 59)">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="block-title title-blue">1. График вариантов по частям суток</div>
+                <div id="shifts-container" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+
+            <div class="card">
+                <div class="flex-row-justify">
+                    <div class="block-title title-rose">2. Простой (Ремонт / Не работал)</div>
+                    <button class="add-btn" onclick="addDynamicRow('downtime')">+ Добавить</button>
+                </div>
+                <div id="downtime-container" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+
+            <div class="card">
+                <div class="flex-row-justify">
+                    <div class="block-title title-green">3. Включения по готовности</div>
+                    <button class="add-btn" onclick="addDynamicRow('readiness')">+ Добавить</button>
+                </div>
+                <div id="readiness-container" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+
+            <button class="calc-btn" onclick="calculateDay()">Рассчитать сутки</button>
+
+            <div id="resultsCard" class="results-card">
+                <h3 style="font-size:14px; font-weight:bold; border-bottom:1px solid #262626; padding-bottom:5px;">Результаты расчета:</h3>
+                <div id="results-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+            </div>
+        </div>
+
+        <div id="content-variants" class="tab-content">
+            <div style="font-size: 13px; font-weight: bold; opacity: 0.8;">Настройка состава вариантов</div>
+            <div id="variants-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+        </div>
+
+        <div id="content-equipment" class="tab-content">
+            <div style="font-size: 13px; font-weight: bold; opacity: 0.8;">Список агрегатов</div>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="newEqName" placeholder="Название агрегата" style="flex-grow:1;">
+                <button class="calc-btn" style="width:50px; padding:0;" onclick="addNewEquipment()">+</button>
+            </div>
+            <div class="card" id="equipment-list" style="padding:5px; gap:0;"></div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    let state = {
+        currentTab: 'calc', dayStartH: '04', dayStartM: '00',
+        equipment: [
+            { id: 1, name: 'Агрегат А-1' }, { id: 2, name: 'Компрессор К-2' }, { id: 3, name: 'Насос Н-1' }
+        ],
+        variants: [
+            { id: 1, name: 'Вариант А', eqIds: [1, 2] }, { id: 2, name: 'Вариант Б', eqIds: [1, 3] },
+            { id: 3, name: 'Вариант В', eqIds: [2] }, { id: 4, name: 'Вариант Г', eqIds: [3] }
+        ],
+        shifts: [
+            { start: '04:00', end: '06:00', variantId: null }, { start: '06:00', end: '12:00', variantId: null },
+            { start: '12:00', end: '16:00', variantId: null }, { start: '16:00', end: '22:00', variantId: null },
+            { start: '22:00', end: '04:00', variantId: null }
+        ],
+        downtimes: [], readiness: []
+    };
+
+    window.onload = function() {
+        if(localStorage.getItem('app_state_v17')) {
+            try { state = JSON.parse(localStorage.getItem('app_state_v17')); } catch(e){}
+        }
+        state.currentTab = 'calc';
+        
+        document.getElementById('dayStartH').value = state.dayStartH || '04';
+        document.getElementById('dayStartM').value = state.dayStartM || '00';
+        
+        renderAll();
+    };
+
+    function saveState() {
+        state.dayStartH = document.getElementById('dayStartH').value || '00';
+        state.dayStartM = document.getElementById('dayStartM').value || '00';
+        localStorage.setItem('app_state_v17', JSON.stringify(state));
+    }
+
+    function switchTab(tabName) {
+        state.currentTab = tabName;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        document.getElementById('tab-' + tabName).classList.add('active');
+        document.getElementById('content-' + tabName).classList.add('active');
+        renderAll();
+    }
+
+    function validateTime(el, max) {
+        let val = parseInt(el.value, 10);
+        if(isNaN(val) || val < 0) val = 0;
+        if(val > max) val = max;
+        el.value = String(val).padStart(2, '0');
+        saveState();
+    }
+
+    function resetDay() {
+        if(confirm('Очистить график смен, простои и готовность?')) {
+            state.shifts.forEach(s => s.variantId = null);
+            state.downtimes = []; state.readiness = [];
+            document.getElementById('resultsCard').classList.remove('active');
+            renderAll(); saveState();
+        }
+    }
+
+    function renderAll() {
+        if(state.currentTab === 'calc') {
+            const container = document.getElementById('shifts-container');
+            container.innerHTML = '';
+            state.shifts.forEach((shift, idx) => {
+                let options = `<option value="none">— Не работал / Простой —</option>`;
+                state.variants.forEach(v => {
+                    options += `<option value="${v.id}" ${shift.variantId == v.id ? 'selected' : ''}>${v.name}</option>`;
+                });
+                container.innerHTML += `
+                    <div class="sub-card">
+                        <div style="font-weight:600;"><span style="font-size:10px; opacity:0.5; display:block;">ЧАСТЬ ${idx+1}</span>${shift.start} — ${shift.end}</div>
+                        <select class="select-w-60" onchange="state.shifts[${idx}].variantId = this.value === 'none' ? null : parseInt(this.value,10); saveState();">
+                            ${options}
+                        </select>
+                    </div>`;
+            });
+
+            renderDynamicRows('downtime', state.downtimes);
+            renderDynamicRows('readiness', state.readiness);
+        }
+
+        if(state.currentTab === 'variants') {
+            const container = document.getElementById('variants-container');
+            container.innerHTML = '';
+            state.variants.forEach((v, vIdx) => {
+                let eqChecks = '';
+                state.equipment.forEach(eq => {
+                    const isChecked = v.eqIds.includes(eq.id) ? 'checked' : '';
+                    eqChecks += `
+                        <label style="display:flex; align-items:center; gap:8px; padding:3px 0; cursor:pointer;">
+                            <input type="checkbox" ${isChecked} onchange="toggleEqInVariant(${vIdx}, ${eq.id}, this.checked)">
+                            <span>${eq.name}</span>
+                        </label>`;
+                });
+                container.innerHTML += `
+                    <div class="card">
+                        <input type="text" value="${v.name}" style="font-weight:bold; border:none; border-bottom:1px solid #262626; background:transparent; color: #f97316;" oninput="state.variants[${vIdx}].name = this.value; saveState();">
+                        <div class="sub-card" style="flex-direction:column; align-items:flex-start; gap:4px;">
+                            <div style="font-size:10px; opacity:0.5; font-weight:bold;">СОСТАВ АГРЕГАТОВ:</div>
+                            ${eqChecks}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        if(state.currentTab === 'equipment') {
+            const container = document.getElementById('equipment-list');
+            container.innerHTML = '';
+            state.equipment.forEach((eq, idx) => {
+                container.innerHTML += `
+                    <div style="display:flex; justify-content:between; align-items:center; padding:10px; border-bottom:1px solid #262626; width:100%;">
+                        <span style="font-size:14px; flex-grow:1;">${eq.name}</span>
+                        <button class="del-btn" onclick="removeEquipment(${eq.id})">✕</button>
+                    </div>`;
+            });
+        }
+    }
+
+    function renderDynamicRows(type, list) {
+        const container = document.getElementById(type + '-container');
+        container.innerHTML = '';
+        list.forEach((item) => {
+            let eqOptions = `<option value="none" disabled selected hidden>Выберите технику</option>`;
+            state.equipment.forEach(eq => {
+                eqOptions += `<option value="${eq.id}" ${item.eqId == eq.id ? 'selected' : ''}>${eq.name}</option>`;
+            });
+
+            container.innerHTML += `
+                <div class="sub-card" style="padding:6px 4px; gap:2px;">
+                    <select style="width:34%; padding: 6px 4px;" onchange="updateRowField('${type}', '${item.id}', 'eqId', parseInt(this.value,10))">
+                        ${eqOptions}
+                    </select>
+                    <div class="time-group">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="ЧЧ" class="time-input" value="${item.sh}" onblur="updateRowTimeField('${type}', '${item.id}', 'sh', this.value, 23)">
+                        <span style="opacity:0.5; font-weight:bold;">:</span>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="ММ" class="time-input" value="${item.sm}" onblur="updateRowTimeField('${type}', '${item.id}', 'sm', this.value, 59)">
+                    </div>
+                    <span style="opacity:0.3; font-weight:bold; margin:0 1px;">—</span>
+                    <div class="time-group">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="ЧЧ" class="time-input" value="${item.eh}" onblur="updateRowTimeField('${type}', '${item.id}', 'eh', this.value, 23)">
+                        <span style="opacity:0.5; font-weight:bold;">:</span>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="ММ" class="time-input" value="${item.em}" onblur="updateRowTimeField('${type}', '${item.id}', 'em', this.value, 59)">
+                    </div>
+                    <button class="del-btn" onclick="deleteDynamicRow('${type}', '${item.id}')">✕</button>
+                </div>`;
+        });
+        if(list.length === 0) {
+            container.innerHTML = `<div style="text-align:center; font-size:11px; opacity:0.5; font-style:italic; padding:5px;">Нет записей</div>`;
+        }
+    }
+
+    function addDynamicRow(type) {
+        const targetList = (type === 'downtime') ? state.downtimes : state.readiness;
+        targetList.push({ id: String(Date.now() + Math.random()), eqId: null, sh:'', sm:'', eh:'', em:'' });
+        renderAll();
+        saveState();
+    }
+
+    function deleteDynamicRow(type, id) {
+        if (type === 'downtime') {
+            state.downtimes = state.downtimes.filter(item => item.id !== id);
+        } else {
+            state.readiness = state.readiness.filter(item => item.id !== id);
+        }
+        renderAll();
+        saveState();
+    }
+
+    function updateRowField(type, id, field, value) {
+        const list = (type === 'downtime') ? state.downtimes : state.readiness;
+        let found = list.find(item => item.id === id);
+        if(found) { found[field] = value; saveState(); }
+    }
+
+    function updateRowTimeField(type, id, field, value, max) {
+        let val = parseInt(value, 10);
+        if(isNaN(val) || val < 0) val = 0;
+        if(val > max) val = max;
+        let strVal = String(val).padStart(2, '0');
+        
+        const list = (type === 'downtime') ? state.downtimes : state.readiness;
+        let found = list.find(item => item.id === id);
+        if(found) { 
+            found[field] = strVal; 
+            renderAll();
+            saveState(); 
+        }
+    }
+    
+    function toggleEqInVariant(vIdx, eqId, isChecked) {
+        let ids = state.variants[vIdx].eqIds;
+        if(isChecked) { if(!ids.includes(eqId)) ids.push(eqId); } 
+        else { state.variants[vIdx].eqIds = ids.filter(id => id !== eqId); }
+        saveState();
+    }
+
+    function addNewEquipment() {
+        const inp = document.getElementById('newEqName');
+        if(!inp.value.trim()) return;
+        state.equipment.push({ id: Date.now(), name: inp.value.trim() });
+        inp.value = ''; renderAll(); saveState();
+    }
+
+    function removeEquipment(id) {
+        state.equipment = state.equipment.filter(e => e.id !== id);
+        state.variants.forEach(v => v.eqIds = v.eqIds.filter(item => item !== id));
+        state.downtimes = state.downtimes.filter(d => d.eqId !== id);
+        state.readiness = state.readiness.filter(r => r.eqId !== id);
+        renderAll(); saveState();
+    }
+
+    // Возвращает строковое значение («00» если пусто), чтобы расчет не падал на пустых полях
+    function safeTimeStr(val) {
+        if (!val || val.trim() === '') return '00';
+        return val.trim();
+    }
+
+    // Превращает введенные ЧЧ:ММ во внутреннюю минуту суток (от 0 до 1439) относительно начала отчетного дня
+    function parseToMinutesRel(hStr, mStr, baseH, baseM) {
+        let h = parseInt(safeTimeStr(hStr), 10);
+        let m = parseInt(safeTimeStr(mStr), 10);
+        if(isNaN(h) || isNaN(m)) return -1;
+        
+        let totalMins = h * 60 + m;
+        let baseMins = baseH * 60 + baseM;
+        
+        let diff = totalMins - baseMins;
+        if(diff < 0) diff += 1440; // Переход через полночь
+        return diff;
+    }
+
+    function calculateDay() {
+        const report = [];
+        const DAY_MINS = 1440;
+        
+        // Синхронизируем поля начала суток перед расчетом на всякий случай
+        let dayStartHField = document.getElementById('dayStartH');
+        let dayStartMField = document.getElementById('dayStartM');
+        if(!dayStartHField.value) dayStartHField.value = '00';
+        if(!dayStartMField.value) dayStartMField.value = '00';
+
+        const baseH = parseInt(dayStartHField.value, 10) || 0;
+        const baseM = parseInt(dayStartMField.value, 10) || 0;
+
+        state.equipment.forEach(eq => {
+            const schArr = new Array(DAY_MINS).fill(false);
+            const downArr = new Array(DAY_MINS).fill(false);
+            const readArr = new Array(DAY_MINS).fill(false);
+
+            // 1. Считаем простои (заполняем карту минут)
+            state.downtimes.forEach(d => {
+                if(d.eqId !== eq.id) return;
+                let start = parseToMinutesRel(d.sh, d.sm, baseH, baseM);
+                let end = parseToMinutesRel(d.eh, d.em, baseH, baseM);
+                if(start === -1 || end === -1) return;
+                
+                if(start === end) { // Круглые сутки
+                    for(let m=0; m<DAY_MINS; m++) downArr[m] = true;
+                } else if(end < start) { // Переход через границу суток
+                    for(let m=start; m<DAY_MINS; m++) downArr[m] = true;
+                    for(let m=0; m<end; m++) downArr[m] = true;
+                } else {
+                    for(let m=start; m<end; m++) downArr[m] = true;
+                }
+            });
+
+            // 2. Считаем график смен (исключая минуты простоя)
+            state.shifts.forEach(shift => {
+                if(!shift.variantId) return;
+                let v = state.variants.find(varItem => varItem.id === shift.variantId);
+                if(v && v.eqIds.includes(eq.id)) {
+                    let [sh, sm] = shift.start.split(':');
+                    let [eh, em] = shift.end.split(':');
+                    let start = parseToMinutesRel(sh, sm, baseH, baseM);
+                    let end = parseToMinutesRel(eh, em, baseH, baseM);
+                    
+                    if(start !== -1 && end !== -1) {
+                        if(end <= start) end += 1440;
+                        for(let m = start; m < end; m++) {
+                            let currM = m % 1440;
+                            if(!downArr[currM]) schArr[currM] = true;
+                        }
+                    }
+                }
+            });
+
+            // 3. Считаем готовность (только если в эту минуту нет графика и нет простоя)
+            state.readiness.forEach(r => {
+                if(r.eqId !== eq.id) return;
+                let start = parseToMinutesRel(r.sh, r.sm, baseH, baseM);
+                let end = parseToMinutesRel(r.eh, r.em, baseH, baseM);
+                if(start === -1 || end === -1) return;
+
+                if(start === end) {
+                    for(let m=0; m<DAY_MINS; m++) {
+                        if(!schArr[m] && !downArr[m]) readArr[m] = true;
+                    }
+                } else if(end < start) {
+                    for(let m=start; m<DAY_MINS; m++) { if(!schArr[m] && !downArr[m]) readArr[m] = true; }
+                    for(let m=0; m<end; m++) { if(!schArr[m] && !downArr[m]) readArr[m] = true; }
+                } else {
+                    for(let m=start; m<end; m++) { if(!schArr[m] && !downArr[m]) readArr[m] = true; }
+                }
+            });
+
+            let schMins = schArr.filter(Boolean).length;
+            let dwnMins = downArr.filter(Boolean).length;
+            let readMins = readArr.filter(Boolean).length;
+
+            report.push({ name: eq.name, sch: schMins, dwn: dwnMins, read: readMins });
+        });
+
+        const resList = document.getElementById('results-list');
+        resList.innerHTML = '';
+        report.forEach(r => {
+            resList.innerHTML += `
+                <div class="res-item">
+                    <div class="res-header">
+                        <span>${r.name}</span>
+                        ${r.dwn > 0 ? `<span style="color:#f87171; font-size:11px;">Простой: ${Math.floor(r.dwn/60)}ч ${r.dwn%60}м</span>` : ''}
+                    </div>
+                    <div class="res-grid">
+                        <div class="res-sub">По графику: <span class="res-val">${Math.floor(r.sch/60)} ч. ${r.sch%60} мин.</span></div>
+                        <div class="res-sub">В готовности: <span class="res-val res-val-green">${Math.floor(r.read/60)} ч. ${r.read%60} мин.</span></div>
+                    </div>
+                </div>`;
+        });
+        document.getElementById('resultsCard').classList.add('active');
+    }
+</script>
+</body>
+</html>
