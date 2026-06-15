@@ -2,41 +2,42 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Учет работы агрегатов v17</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Учет работы агрегатов v23</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    
     <style>
         * { 
             box-sizing: border-box; 
             margin: 0; 
             padding: 0; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            -webkit-tap-highlight-color: transparent;
         }
         
         body { 
-            background-color: #000000; 
-            color: #ffffff; 
-            padding-bottom: 30px; 
+            background-color: #f8fafc; 
+            color: #1e293b; 
+            padding-bottom: 40px; 
         }
         
         .app-container { 
-            max-width: 450px; 
+            max-width: 480px; 
             margin: 0 auto; 
-            background-color: #000000; 
+            background-color: #f8fafc; 
             min-height: 100vh; 
             display: flex; 
             flex-direction: column; 
-            border: 1px solid #262626;
         }
         
-        /* ШАПКА И ТАБЫ */
         header { 
-            background-color: #171717; 
-            color: #ffffff; 
-            padding: 15px; 
+            background-color: #ffffff; 
+            padding: 16px; 
             position: sticky; 
             top: 0; 
             z-index: 50; 
-            border-bottom: 1px solid #262626;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
         
         .header-top { 
@@ -46,60 +47,62 @@
         }
         
         .header-top h1 { 
-            font-size: 16px; 
-            font-weight: bold; 
+            font-size: 19px; 
+            font-weight: 700;
+            color: #1e3a8a;
+            letter-spacing: -0.3px;
         }
         
         .clear-btn { 
-            font-size: 11px; 
-            padding: 4px 8px; 
-            border-radius: 6px; 
-            border: 1px solid #404040; 
-            background: transparent; 
-            color: #ffffff; 
+            font-size: 12px; 
+            font-weight: 600;
+            padding: 6px 14px; 
+            border-radius: 8px; 
+            border: 1px solid #cbd5e1; 
+            background: #ffffff; 
+            color: #475569; 
             cursor: pointer; 
-        }
-        
-        .clear-btn:hover {
-            background: #262626;
         }
         
         .tabs { 
             display: flex; 
             justify-content: space-around; 
-            margin-top: 12px; 
+            margin-top: 16px; 
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 10px;
         }
         
         .tab-btn { 
-            font-size: 12px; 
+            flex: 1;
+            font-size: 13px; 
             text-transform: uppercase; 
-            font-weight: 600; 
+            font-weight: 700; 
             background: none; 
             border: none; 
-            color: inherit; 
-            opacity: 0.5; 
-            padding-bottom: 4px; 
+            color: #64748b; 
+            padding: 9px 0;
+            border-radius: 8px;
             cursor: pointer; 
         }
         
         .tab-btn.active { 
-            opacity: 1; 
-            border-bottom: 2px solid #f97316; 
-            color: #f97316;
+            background: #ffffff;
+            color: #1e3a8a;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
         }
 
-        /* КОНТЕНТ */
         main { 
-            padding: 15px; 
+            padding: 16px; 
             display: flex; 
             flex-direction: column; 
-            gap: 15px; 
+            gap: 16px; 
         }
         
         .tab-content { 
             display: none; 
             flex-direction: column; 
-            gap: 15px; 
+            gap: 16px; 
         }
         
         .tab-content.active { 
@@ -107,13 +110,14 @@
         }
         
         .card { 
-            background-color: #171717; 
-            border: 1px solid #262626; 
-            padding: 15px; 
-            border-radius: 12px; 
+            background-color: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            padding: 18px; 
+            border-radius: 16px; 
             display: flex; 
             flex-direction: column; 
-            gap: 10px; 
+            gap: 14px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
         }
         
         .flex-row-justify { 
@@ -123,172 +127,173 @@
         }
         
         .block-title { 
-            font-size: 12px; 
-            font-weight: bold; 
-            text-transform: uppercase; 
-            letter-spacing: 0.5px; 
+            font-size: 14px; 
+            font-weight: 700; 
         }
         
-        .title-blue { color: #38bdf8; } 
-        .title-rose { color: #f87171; } 
-        .title-green { color: #4ade80; } 
+        .title-blue { color: #1e3a8a; } 
+        .title-rose { color: #b91c1c; } 
+        .title-green { color: #15803d; } 
         
         .sub-card { 
-            background-color: #0a0a0a; 
-            border: 1px solid #262626; 
-            padding: 10px; 
-            border-radius: 8px; 
+            background-color: #f8fafc; 
+            border: 1px solid #e2e8f0; 
+            padding: 12px; 
+            border-radius: 12px; 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            font-size: 13px; 
+            gap: 8px;
         }
         
-        /* УДОБНЫЕ ПОЛЯ ВВОДА ВРЕМЕНИ */
-        .time-group { 
-            display: flex; 
-            align-items: center; 
-            gap: 1px; 
-            padding: 6px 8px; 
-            border-radius: 8px; 
-            border: 1px solid #404040; 
-            background: #171717; 
+        .time-container-inputs {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
-        
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .time-box span {
+            font-size: 9px;
+            color: #64748b;
+            font-weight: bold;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+
         .time-input { 
-            width: 35px; 
+            width: 46px; 
+            height: 40px;
             text-align: center; 
-            background: transparent; 
-            border: none; 
-            color: #ffffff; 
-            font-weight: bold; 
+            background: #f1f5f9; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 8px;
+            color: #0f172a; 
+            font-weight: 700; 
             font-size: 16px; 
             outline: none; 
+            transition: all 0.15s;
+        }
+        
+        .time-input:focus {
+            border-color: #1e3a8a;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
+        }
+
+        .time-divider {
+            font-weight: 700;
+            font-size: 18px;
+            color: #94a3b8;
+            margin-top: 10px;
+            padding: 0 2px;
         }
         
         select, input[type="text"] { 
-            padding: 8px; 
-            border-radius: 8px; 
-            border: 1px solid #404040; 
-            background: #171717; 
-            color: #ffffff; 
-            font-size: 13px; 
+            padding: 12px; 
+            border-radius: 10px; 
+            border: 1px solid #cbd5e1; 
+            background: #f1f5f9; 
+            color: #0f172a; 
+            font-size: 16px; 
+            font-weight: 600;
             outline: none; 
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: #1e3a8a;
+            background: #ffffff;
         }
         
         .select-w-60 { 
-            width: 60%; 
-            font-weight: bold; 
-            color: #f97316;
+            width: 58%; 
+            color: #1e3a8a;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%231e3a8a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+            padding-right: 28px;
+            appearance: none;
+            font-size: 14px;
         }
         
-        /* КНОПКИ ОРАНЖЕВЫЕ */
         .add-btn { 
             color: #ffffff; 
-            background-color: #f97316;
+            background-color: #1e3a8a;
             font-size: 12px; 
-            padding: 6px 12px; 
+            padding: 8px 14px; 
             border-radius: 8px; 
             border: none; 
-            font-weight: bold; 
+            font-weight: 700; 
             cursor: pointer; 
         }
-        
-        .add-btn:hover { background-color: #ea580c; }
         
         .calc-btn { 
             width: 100%; 
-            padding: 14px; 
+            padding: 16px; 
             border-radius: 12px; 
-            background-color: #f97316; 
+            background-color: #1e3a8a; 
             color: #ffffff; 
-            font-weight: bold; 
-            font-size: 15px; 
+            font-weight: 700; 
+            font-size: 16px; 
             border: none; 
             cursor: pointer; 
+            box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.2);
         }
-        
-        .calc-btn:hover { background-color: #ea580c; }
         
         .del-btn { 
-            background: none; 
-            border: none; 
+            background: #fef2f2; 
+            border: 1px solid #fca5a5; 
             color: #ef4444; 
-            font-size: 18px; 
-            font-weight: bold; 
+            width: 34px;
+            height: 40px;
+            border-radius: 8px;
+            font-size: 14px; 
+            font-weight: 700; 
             cursor: pointer; 
-            padding: 0 8px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 12px;
         }
         
-        /* РЕЗУЛЬТАТЫ */
         .results-card { 
-            border: 2px solid #f97316; 
-            padding: 15px; 
-            border-radius: 12px; 
+            border: 1px solid #1e3a8a; 
+            padding: 18px; 
+            border-radius: 16px; 
             display: none; 
             flex-direction: column; 
-            gap: 10px; 
-            background-color: #171717;
+            gap: 14px; 
+            background-color: #ffffff;
         }
         
-        .results-card.active { 
-            display: flex; 
-        }
+        .results-card.active { display: flex; }
         
         .res-item { 
-            border-top: 1px solid #262626; 
-            padding-top: 10px; 
-            margin-top: 5px; 
+            border-top: 1px solid #e2e8f0; 
+            padding-top: 14px; 
+            margin-top: 4px; 
         }
         
-        .res-item:first-child { 
-            border-top: none; 
-            padding-top: 0; 
-            margin-top: 0; 
-        }
-        
-        .res-header { 
-            display: flex; 
-            justify-content: space-between; 
-            font-weight: bold; 
-            font-size: 13px; 
-        }
-        
-        .res-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 8px; 
-            margin-top: 5px; 
-        }
-        
-        .res-sub { 
-            padding: 6px; 
-            border: 1px solid #262626; 
-            border-radius: 6px; 
-            font-size: 11px; 
-            background-color: #0a0a0a;
-        }
-        
-        .res-val { 
-            font-weight: bold; 
-            font-size: 12px; 
-            display: block; 
-            margin-top: 2px; 
-            color: #38bdf8; 
-        }
-        
-        .res-val-green { 
-            color: #4ade80; 
-        }
+        .res-item:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+        .res-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 15px; color: #0f172a; }
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .res-sub { padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; background-color: #f8fafc; color: #475569; }
+        .res-val { font-weight: 700; font-size: 14px; display: block; margin-top: 4px; color: #1e3a8a; }
+        .res-val-green { color: #16a34a; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    
     <header>
         <div class="header-top">
-            <h1>Учет агрегатов</h1>
+            <h1>Учет работы агрегатов</h1>
             <button class="clear-btn" onclick="resetDay()">Очистить</button>
         </div>
         <div class="tabs">
@@ -299,20 +304,23 @@
     </header>
 
     <main>
-        
         <div id="content-calc" class="tab-content active">
-            <div class="card flex-row-justify">
-                <span style="font-size: 12px; font-weight: bold; opacity: 0.8;">НАЧАЛО СУТОК:</span>
-                <div class="time-group">
-                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="dayStartH" class="time-input" value="04" maxlength="2" onblur="validateTime(this, 23)">
-                    <span style="opacity:0.5; font-weight:bold; font-size: 16px;">:</span>
-                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="dayStartM" class="time-input" value="00" maxlength="2" onblur="validateTime(this, 59)">
+            <div class="card flex-row-justify" style="padding: 14px 18px;">
+                <span style="font-size: 13px; font-weight: 800; color: #475569;">НАЧАЛО СУТОК:</span>
+                <div class="time-container-inputs">
+                    <div class="time-box">
+                        <input type="text" inputmode="decimal" pattern="[0-9]*" id="dayStartH" class="time-input" value="04" maxlength="2" oninput="handleStaticTimeInput(this)">
+                    </div>
+                    <div class="time-divider" style="margin-top:0;">:</div>
+                    <div class="time-box">
+                        <input type="text" inputmode="decimal" pattern="[0-9]*" id="dayStartM" class="time-input" value="00" maxlength="2" oninput="handleStaticTimeInput(this)" onblur="validateStaticTime(this, 59)">
+                    </div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="block-title title-blue">1. График вариантов по частям суток</div>
-                <div id="shifts-container" style="display:flex; flex-direction:column; gap:8px;"></div>
+                <div class="block-title title-blue">1. График вариантов по части суток</div>
+                <div id="shifts-container" style="display:flex; flex-direction:column; gap:10px;"></div>
             </div>
 
             <div class="card">
@@ -320,7 +328,7 @@
                     <div class="block-title title-rose">2. Простой (Ремонт / Не работал)</div>
                     <button class="add-btn" onclick="addDynamicRow('downtime')">+ Добавить</button>
                 </div>
-                <div id="downtime-container" style="display:flex; flex-direction:column; gap:8px;"></div>
+                <div id="downtime-container" style="display:flex; flex-direction:column; gap:10px;"></div>
             </div>
 
             <div class="card">
@@ -328,31 +336,30 @@
                     <div class="block-title title-green">3. Включения по готовности</div>
                     <button class="add-btn" onclick="addDynamicRow('readiness')">+ Добавить</button>
                 </div>
-                <div id="readiness-container" style="display:flex; flex-direction:column; gap:8px;"></div>
+                <div id="readiness-container" style="display:flex; flex-direction:column; gap:10px;"></div>
             </div>
 
             <button class="calc-btn" onclick="calculateDay()">Рассчитать сутки</button>
 
             <div id="resultsCard" class="results-card">
-                <h3 style="font-size:14px; font-weight:bold; border-bottom:1px solid #262626; padding-bottom:5px;">Результаты расчета:</h3>
-                <div id="results-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+                <h3 style="font-size:15px; font-weight:800; border-bottom:1px solid #e2e8f0; padding-bottom:8px; color: #1e3a8a;">Результаты расчета:</h3>
+                <div id="results-list" style="display:flex; flex-direction:column; gap:12px;"></div>
             </div>
         </div>
 
         <div id="content-variants" class="tab-content">
-            <div style="font-size: 13px; font-weight: bold; opacity: 0.8;">Настройка состава вариантов</div>
-            <div id="variants-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+            <div style="font-size: 14px; font-weight: 700; color: #475569; padding-left: 4px;">Настройка состава вариантов</div>
+            <div id="variants-container" style="display:flex; flex-direction:column; gap:14px;"></div>
         </div>
 
         <div id="content-equipment" class="tab-content">
-            <div style="font-size: 13px; font-weight: bold; opacity: 0.8;">Список агрегатов</div>
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="newEqName" placeholder="Название агрегата" style="flex-grow:1;">
-                <button class="calc-btn" style="width:50px; padding:0;" onclick="addNewEquipment()">+</button>
+            <div style="font-size: 14px; font-weight: 700; color: #475569; padding-left: 4px;">Список агрегатов</div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="newEqName" placeholder="Введите название агрегата..." style="flex-grow:1; background:#ffffff;">
+                <button class="calc-btn" style="width:54px; padding:0; border-radius:10px;" onclick="addNewEquipment()">+</button>
             </div>
-            <div class="card" id="equipment-list" style="padding:5px; gap:0;"></div>
+            <div class="card" id="equipment-list" style="padding:6px; gap:0;"></div>
         </div>
-
     </main>
 </div>
 
@@ -375,21 +382,19 @@
     };
 
     window.onload = function() {
-        if(localStorage.getItem('app_state_v17')) {
-            try { state = JSON.parse(localStorage.getItem('app_state_v17')); } catch(e){}
+        if(localStorage.getItem('app_state_v23')) {
+            try { state = JSON.parse(localStorage.getItem('app_state_v23')); } catch(e){}
         }
         state.currentTab = 'calc';
-        
         document.getElementById('dayStartH').value = state.dayStartH || '04';
         document.getElementById('dayStartM').value = state.dayStartM || '00';
-        
         renderAll();
     };
 
     function saveState() {
         state.dayStartH = document.getElementById('dayStartH').value || '00';
         state.dayStartM = document.getElementById('dayStartM').value || '00';
-        localStorage.setItem('app_state_v17', JSON.stringify(state));
+        localStorage.setItem('app_state_v23', JSON.stringify(state));
     }
 
     function switchTab(tabName) {
@@ -402,12 +407,72 @@
         renderAll();
     }
 
-    function validateTime(el, max) {
+    // Умный фокус для статического поля начала суток
+    function handleStaticTimeInput(el) {
+        el.value = el.value.replace(/[^0-9]/g, '');
+        if (el.value.length >= 2) {
+            validateStaticTime(el, el.id === 'dayStartH' ? 23 : 59);
+            if (el.id === 'dayStartH') {
+                const minInput = document.getElementById('dayStartM');
+                minInput.focus();
+                minInput.select();
+            }
+        }
+    }
+
+    function validateStaticTime(el, max) {
         let val = parseInt(el.value, 10);
         if(isNaN(val) || val < 0) val = 0;
         if(val > max) val = max;
         el.value = String(val).padStart(2, '0');
         saveState();
+    }
+
+    // РЕАКТИВНЫЙ РАБОЧИЙ ВВОД В ТАБЛИЦАХ (Без перерисовки HTML!)
+    function syncLiveField(el, type, id, field, max) {
+        el.value = el.value.replace(/[^0-9]/g, '');
+        let valStr = el.value;
+        
+        // Запись напрямую в стейт
+        const list = (type === 'downtime') ? state.downtimes : state.readiness;
+        let found = list.find(item => item.id === id);
+        if(found) {
+            found[field] = valStr;
+            saveState();
+        }
+
+        // Автоматический прыжок на следующее окно, если забили 2 цифры
+        if (valStr.length >= 2) {
+            let num = parseInt(valStr, 10);
+            if (num > max) el.value = String(max).padStart(2, '0');
+            if (found) found[field] = el.value;
+            saveState();
+
+            // Ищем соседний input внутри этой же карточки sub-card
+            const card = el.closest('.sub-card');
+            const inputs = Array.from(card.querySelectorAll('.time-input'));
+            const index = inputs.indexOf(el);
+            if (index > -1 && index < inputs.length - 1) {
+                const nextInput = inputs[index + 1];
+                nextInput.focus();
+                nextInput.select();
+            }
+        }
+    }
+
+    // Дополнительная очистка пустых окон при потере фокуса
+    function blurLiveField(el, type, id, field, max) {
+        let val = parseInt(el.value, 10);
+        if (isNaN(val)) val = 0;
+        if (val > max) val = max;
+        el.value = String(val).padStart(2, '0');
+        
+        const list = (type === 'downtime') ? state.downtimes : state.readiness;
+        let found = list.find(item => item.id === id);
+        if(found) {
+            found[field] = el.value;
+            saveState();
+        }
     }
 
     function resetDay() {
@@ -430,7 +495,7 @@
                 });
                 container.innerHTML += `
                     <div class="sub-card">
-                        <div style="font-weight:600;"><span style="font-size:10px; opacity:0.5; display:block;">ЧАСТЬ ${idx+1}</span>${shift.start} — ${shift.end}</div>
+                        <div style="font-weight:700; color:#0f172a;"><span style="font-size:10px; color:#64748b; display:block; font-weight:800;">ЧАСТЬ ${idx+1}</span>${shift.start} — ${shift.end}</div>
                         <select class="select-w-60" onchange="state.shifts[${idx}].variantId = this.value === 'none' ? null : parseInt(this.value,10); saveState();">
                             ${options}
                         </select>
@@ -449,16 +514,16 @@
                 state.equipment.forEach(eq => {
                     const isChecked = v.eqIds.includes(eq.id) ? 'checked' : '';
                     eqChecks += `
-                        <label style="display:flex; align-items:center; gap:8px; padding:3px 0; cursor:pointer;">
-                            <input type="checkbox" ${isChecked} onchange="toggleEqInVariant(${vIdx}, ${eq.id}, this.checked)">
+                        <label style="display:flex; align-items:center; gap:10px; padding:6px 0; cursor:pointer; font-weight:600; font-size:15px; color:#334155;">
+                            <input type="checkbox" style="width:20px; height:20px; accent-color:#1e3a8a;" ${isChecked} onchange="toggleEqInVariant(${vIdx}, ${eq.id}, this.checked)">
                             <span>${eq.name}</span>
                         </label>`;
                 });
                 container.innerHTML += `
                     <div class="card">
-                        <input type="text" value="${v.name}" style="font-weight:bold; border:none; border-bottom:1px solid #262626; background:transparent; color: #f97316;" oninput="state.variants[${vIdx}].name = this.value; saveState();">
-                        <div class="sub-card" style="flex-direction:column; align-items:flex-start; gap:4px;">
-                            <div style="font-size:10px; opacity:0.5; font-weight:bold;">СОСТАВ АГРЕГАТОВ:</div>
+                        <input type="text" value="${v.name}" style="font-weight:700; font-size:16px; border:none; border-bottom:2px solid #e2e8f0; background:transparent; color: #1e3a8a; border-radius:0; padding:6px 0;" oninput="state.variants[${vIdx}].name = this.value; saveState();">
+                        <div class="sub-card" style="flex-direction:column; align-items:flex-start; gap:6px; background:#f8fafc;">
+                            <div style="font-size:11px; color:#64748b; font-weight:800;">СОСТАВ АГРЕГАТОВ:</div>
                             ${eqChecks}
                         </div>
                     </div>`;
@@ -470,9 +535,9 @@
             container.innerHTML = '';
             state.equipment.forEach((eq, idx) => {
                 container.innerHTML += `
-                    <div style="display:flex; justify-content:between; align-items:center; padding:10px; border-bottom:1px solid #262626; width:100%;">
-                        <span style="font-size:14px; flex-grow:1;">${eq.name}</span>
-                        <button class="del-btn" onclick="removeEquipment(${eq.id})">✕</button>
+                    <div style="display:flex; justify-content:between; align-items:center; padding:12px; border-bottom:1px solid #e2e8f0; width:100%;">
+                        <span style="font-size:16px; font-weight:600; flex-grow:1; color:#0f172a;">${eq.name}</span>
+                        <button class="del-btn" style="margin-top:0; height:34px; width:34px;" onclick="removeEquipment(${eq.id})">✕</button>
                     </div>`;
             });
         }
@@ -488,26 +553,42 @@
             });
 
             container.innerHTML += `
-                <div class="sub-card" style="padding:6px 4px; gap:2px;">
-                    <select style="width:34%; padding: 6px 4px;" onchange="updateRowField('${type}', '${item.id}', 'eqId', parseInt(this.value,10))">
+                <div class="sub-card" style="padding:8px 6px; gap:4px; align-items: center;">
+                    <select style="width:33%; padding: 8px 4px; font-size:13px; font-weight:700;" onchange="const list=( '${type}'==='downtime')?state.downtimes:state.readiness; let f=list.find(i=>i.id==='${item.id}'); if(f){f.eqId=parseInt(this.value,10); saveState();}">
                         ${eqOptions}
                     </select>
-                    <div class="time-group">
-                        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="ЧЧ" class="time-input" value="${item.sh}" onblur="updateRowTimeField('${type}', '${item.id}', 'sh', this.value, 23)">
-                        <span style="opacity:0.5; font-weight:bold;">:</span>
-                        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="ММ" class="time-input" value="${item.sm}" onblur="updateRowTimeField('${type}', '${item.id}', 'sm', this.value, 59)">
+                    
+                    <div class="time-container-inputs">
+                        <div class="time-box">
+                            <span>Нач</span>
+                            <input type="text" inputmode="decimal" pattern="[0-9]*" class="time-input" value="${item.sh}" oninput="syncLiveField(this, '${type}', '${item.id}', 'sh', 23)" onblur="blurLiveField(this, '${type}', '${item.id}', 'sh', 23)" onclick="this.select()">
+                        </div>
+                        <div class="time-divider">:</div>
+                        <div class="time-box">
+                            <span>Мин</span>
+                            <input type="text" inputmode="decimal" pattern="[0-9]*" class="time-input" value="${item.sm}" oninput="syncLiveField(this, '${type}', '${item.id}', 'sm', 59)" onblur="blurLiveField(this, '${type}', '${item.id}', 'sm', 59)" onclick="this.select()">
+                        </div>
                     </div>
-                    <span style="opacity:0.3; font-weight:bold; margin:0 1px;">—</span>
-                    <div class="time-group">
-                        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="ЧЧ" class="time-input" value="${item.eh}" onblur="updateRowTimeField('${type}', '${item.id}', 'eh', this.value, 23)">
-                        <span style="opacity:0.5; font-weight:bold;">:</span>
-                        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="ММ" class="time-input" value="${item.em}" onblur="updateRowTimeField('${type}', '${item.id}', 'em', this.value, 59)">
+                    
+                    <span style="color:#cbd5e1; font-weight:bold; margin-top:12px; padding:0 1px;">—</span>
+                    
+                    <div class="time-container-inputs">
+                        <div class="time-box">
+                            <span>Кон</span>
+                            <input type="text" inputmode="decimal" pattern="[0-9]*" class="time-input" value="${item.eh}" oninput="syncLiveField(this, '${type}', '${item.id}', 'eh', 23)" onblur="blurLiveField(this, '${type}', '${item.id}', 'eh', 23)" onclick="this.select()">
+                        </div>
+                        <div class="time-divider">:</div>
+                        <div class="time-box">
+                            <span>Мин</span>
+                            <input type="text" inputmode="decimal" pattern="[0-9]*" class="time-input" value="${item.em}" oninput="syncLiveField(this, '${type}', '${item.id}', 'em', 59)" onblur="blurLiveField(this, '${type}', '${item.id}', 'em', 59)" onclick="this.select()">
+                        </div>
                     </div>
+                    
                     <button class="del-btn" onclick="deleteDynamicRow('${type}', '${item.id}')">✕</button>
                 </div>`;
         });
         if(list.length === 0) {
-            container.innerHTML = `<div style="text-align:center; font-size:11px; opacity:0.5; font-style:italic; padding:5px;">Нет записей</div>`;
+            container.innerHTML = `<div style="text-align:center; font-size:12px; color:#64748b; font-style:italic; padding:8px;">Нет записей</div>`;
         }
     }
 
@@ -526,27 +607,6 @@
         }
         renderAll();
         saveState();
-    }
-
-    function updateRowField(type, id, field, value) {
-        const list = (type === 'downtime') ? state.downtimes : state.readiness;
-        let found = list.find(item => item.id === id);
-        if(found) { found[field] = value; saveState(); }
-    }
-
-    function updateRowTimeField(type, id, field, value, max) {
-        let val = parseInt(value, 10);
-        if(isNaN(val) || val < 0) val = 0;
-        if(val > max) val = max;
-        let strVal = String(val).padStart(2, '0');
-        
-        const list = (type === 'downtime') ? state.downtimes : state.readiness;
-        let found = list.find(item => item.id === id);
-        if(found) { 
-            found[field] = strVal; 
-            renderAll();
-            saveState(); 
-        }
     }
     
     function toggleEqInVariant(vIdx, eqId, isChecked) {
@@ -571,13 +631,11 @@
         renderAll(); saveState();
     }
 
-    // Возвращает строковое значение («00» если пусто), чтобы расчет не падал на пустых полях
     function safeTimeStr(val) {
         if (!val || val.trim() === '') return '00';
         return val.trim();
     }
 
-    // Превращает введенные ЧЧ:ММ во внутреннюю минуту суток (от 0 до 1439) относительно начала отчетного дня
     function parseToMinutesRel(hStr, mStr, baseH, baseM) {
         let h = parseInt(safeTimeStr(hStr), 10);
         let m = parseInt(safeTimeStr(mStr), 10);
@@ -587,7 +645,7 @@
         let baseMins = baseH * 60 + baseM;
         
         let diff = totalMins - baseMins;
-        if(diff < 0) diff += 1440; // Переход через полночь
+        if(diff < 0) diff += 1440;
         return diff;
     }
 
@@ -595,7 +653,6 @@
         const report = [];
         const DAY_MINS = 1440;
         
-        // Синхронизируем поля начала суток перед расчетом на всякий случай
         let dayStartHField = document.getElementById('dayStartH');
         let dayStartMField = document.getElementById('dayStartM');
         if(!dayStartHField.value) dayStartHField.value = '00';
@@ -609,16 +666,15 @@
             const downArr = new Array(DAY_MINS).fill(false);
             const readArr = new Array(DAY_MINS).fill(false);
 
-            // 1. Считаем простои (заполняем карту минут)
             state.downtimes.forEach(d => {
                 if(d.eqId !== eq.id) return;
                 let start = parseToMinutesRel(d.sh, d.sm, baseH, baseM);
                 let end = parseToMinutesRel(d.eh, d.em, baseH, baseM);
                 if(start === -1 || end === -1) return;
                 
-                if(start === end) { // Круглые сутки
+                if(start === end) {
                     for(let m=0; m<DAY_MINS; m++) downArr[m] = true;
-                } else if(end < start) { // Переход через границу суток
+                } else if(end < start) {
                     for(let m=start; m<DAY_MINS; m++) downArr[m] = true;
                     for(let m=0; m<end; m++) downArr[m] = true;
                 } else {
@@ -626,7 +682,6 @@
                 }
             });
 
-            // 2. Считаем график смен (исключая минуты простоя)
             state.shifts.forEach(shift => {
                 if(!shift.variantId) return;
                 let v = state.variants.find(varItem => varItem.id === shift.variantId);
@@ -646,7 +701,6 @@
                 }
             });
 
-            // 3. Считаем готовность (только если в эту минуту нет графика и нет простоя)
             state.readiness.forEach(r => {
                 if(r.eqId !== eq.id) return;
                 let start = parseToMinutesRel(r.sh, r.sm, baseH, baseM);
@@ -679,7 +733,7 @@
                 <div class="res-item">
                     <div class="res-header">
                         <span>${r.name}</span>
-                        ${r.dwn > 0 ? `<span style="color:#f87171; font-size:11px;">Простой: ${Math.floor(r.dwn/60)}ч ${r.dwn%60}м</span>` : ''}
+                        ${r.dwn > 0 ? `<span style="color:#b91c1c; font-size:12px;">Простой: ${Math.floor(r.dwn/60)}ч ${r.dwn%60}м</span>` : ''}
                     </div>
                     <div class="res-grid">
                         <div class="res-sub">По графику: <span class="res-val">${Math.floor(r.sch/60)} ч. ${r.sch%60} мин.</span></div>
